@@ -1,0 +1,17 @@
+# Database
+local_db
+
+# Local server configuration
+local
+
+# Eliom
+.depend
+_client
+_deps
+_server
+
+# Mobile application
+cordova
+
+# Style
+.sass_cache

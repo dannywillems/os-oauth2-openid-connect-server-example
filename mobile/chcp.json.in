@@ -1,0 +1,5 @@
+{
+    "release": "%%DATE%%",
+    "content_url": "%%APPSERVER%%/update/%%DATE%%",
+    "update": "now"
+}

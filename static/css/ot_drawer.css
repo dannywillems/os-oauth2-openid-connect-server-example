@@ -1,0 +1,109 @@
+/* Generic drawer stylesheet. */
+
+/* .ot-dr-container.open .ot-dr-toggle-button { */
+/*     display: none; */
+/* } */
+
+/* @include media-screen-m-l { */
+/*     .ot-dr-toggle-button { */
+/*         top: 1rem; */
+/*     } */
+/* }  */
+
+/* .ot-dr-toggle-button::before { */
+/*     font-family: 'FontAwesome'; */
+/*     content: '\f0c9'; */
+/*     padding: 1rem; */
+/* } */
+
+/* .ot-dr-toggle-button.login::before { */
+/*     font-family: 'Ubuntu'; */
+/*     content: 'login'; */
+/* } */
+
+
+.ot-drawer-bckgrnd {
+    background-color: rgba(0,0,0,0);
+    transition: background-color .35s;
+}
+
+.ot-drawer-bckgrnd.ot-dr-closing,
+.ot-drawer-bckgrnd.ot-dr-opening,
+.ot-drawer-bckgrnd.ot-dr-open {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+.ot-drawer-bckgrnd.ot-dr-open {
+    background-color: rgba(0,0,0,0.5);
+}
+
+.ot-drawer {
+
+    position: fixed;
+    top: 0;
+    height: 100%;
+    z-index: 1;
+
+    /* [ overflow: visible ; ] is needed for the button
+     * to be displayed
+     * if the drawer needs to be scrollable, you probably will want
+     * to wrap the content into a wrapper with overflow-y: auto ; */
+    overflow: visible ;
+
+    transform: translate3d(0, 0, 0);
+    transition: -webkit-transform .35s ease-out;
+    transition: transform .35s ease-out;
+    width: calc(100% - 50px) ;
+
+    /* We set up drawer so that the default transform is the identity
+     * Otherwise, with Firefox, a transition is performed on page
+     * change. */
+
+    background-color: white;
+}
+
+@media (min-width: 720px) {
+    .ot-drawer {
+        width: 300px;
+    }
+}
+
+.ot-drawer.ot-dr-left { right: 100% ; }
+.ot-drawer.ot-dr-right { left: 100% ; }
+
+.ot-dr-toggle-button::before { content: "≡"; }
+.ot-drawer-bckgrnd.ot-dr-open .ot-dr-toggle-button::before { content: "⟨"; }
+.ot-drawer-bckgrnd.ot-dr-open .ot-dr-toggle-button {
+    background-color: #445;
+}
+
+.ot-drawer > .ot-dr-toggle-button {
+    position: absolute ;
+    top: 0 ;
+    cursor: pointer ;
+    height: 50px;
+    width: 50px;
+    background-color: transparent;
+    border: none;
+    font-size: 30px;
+    outline: none;
+}
+
+.ot-drawer.ot-dr-left > .ot-dr-toggle-button { left: 100% ; }
+.ot-drawer.ot-dr-right > .ot-dr-toggle-button { right: 100% ; }
+
+
+.ot-drawer-bckgrnd.ot-dr-open .ot-drawer.ot-dr-left  {
+    -webkit-transform: translate3d(100%, 0, 0);
+    transform: translate3d(100%, 0, 0);
+}
+
+.ot-drawer-bckgrnd.ot-dr-open .ot-drawer.ot-dr-right {
+    -webkit-transform: translate3d(-100%, 0, 0);
+    transform: translate3d(-100%, 0, 0);
+}

@@ -1,0 +1,89 @@
+# The following condition is used to determinate if the sed version is BSD or
+# GNU. It is useful because `sed -i` has a different implementation (and this
+# command is needed by $(CSS_DEST). It uses the fact that `sed --version`
+# doesn't exist for the BSD version.
+
+check_sed:
+ifneq ($(shell sed --version 2> /dev/null),)
+SED = sed -i
+else
+SED = sed -i .css
+endif
+
+.PHONY: check_sed
+
+css: import-external-css $(CSS_DEST)
+
+define ERROR_SASS
+
+Error: SASS not found.
+
+Ocsigen-start gives the choice to use SASS (a CSS preprocessor) to write
+stylesheets. We encourage you to use SASS and the template needs it by default.
+See https://sass-lang.com for more information.
+If you don't really want to use it, you can change the value of the variable
+USE_SASS to "no" in Makefile.options to use CSS.
+
+endef
+
+.PHONY: check_sass clean-style import-external-css
+
+check_sass:
+ifeq ($(strip $(USE_SASS)),yes)
+ifeq ($(shell sass -v 2> /dev/null),)
+$(error $(ERROR_SASS))
+endif
+endif
+
+##----------------------------------------------------------------------
+## SASS rules
+
+# If $(USE_SASS) (see Makefile.options) is set to yes, it will compile and
+# compress all SASS files and save it in $(LOCAL_CSS).
+# If SASS is not activated, it will concatenate all CSS files (listed in
+# $(CSS_FILES)) in $(LOCAL_CSS).
+# In both cases, external CSS files ($(EXTERNAL_CSS_FILES)) are copied.
+$(LOCAL_CSS): check_sass import-external-css
+ifeq "$(USE_SASS)" "yes"
+	[ -d $(SASSDIR) ] && \
+	SASS_PATH=$(SASS_PATH) sass --style compressed $(SASS_SRC) $(SASS_FILES) $@
+else
+	cat $(CSS_FILES) > $(LOCAL_CSS)
+endif
+
+##----------------------------------------------------------------------
+## CSS rules
+
+$(CSSDIR):
+	mkdir -p $@
+
+# Copy the CSS file $(LOCAL_CSS) in $(CSS_DEST) after adding a hash in the name
+# and make a symlink for $(PROJECT_NAME).css which is used in index.html.
+# FIXME: md5sum is not by default on Mac OSX: it must be installed with brew.
+# Instead of md5sum, md5 is present but the output is different.
+$(CSS_DEST): $(LOCAL_CSS) | $(CSSDIR) check_sed
+	HASH=`cat $< | md5sum | cut -d ' ' -f 1` && \
+	cp $< $(CSS_PREFIX)_$$HASH.css && \
+	$(SED) '1s/^/@charset "UTF-8";/' $(CSS_PREFIX)_$$HASH.css && \
+	ln -sf $(PROJECT_NAME)_$$HASH.css $@
+# Charset is necessary for iOS.
+# Including it in scss does not work because sass removes it.
+
+##----------------------------------------------------------------------
+## External CSS
+
+# Copy files from other projects into the working directory.
+# By default, it imports all CSS files from ocsigen-toolkit because the template
+# needs it.
+# See EXTERNAL_CSS_FILES definition in Makefile.options for more information.
+# It is executed with every run of make to be sure external CSS files are
+# up-to-date and it allows to add other external CSS files between two
+# compilation processes.
+
+import-external-css:
+ifneq "$(EXTERNAL_CSS_FILES)" ""
+	cp $(EXTERNAL_CSS_FILES) $(LOCAL_STATIC_CSS)
+endif
+
+clean-style:
+	$(RM) $(LOCAL_CSS) $(LOCAL_STATIC_CSS)/$(PROJECT_NAME).map.css
