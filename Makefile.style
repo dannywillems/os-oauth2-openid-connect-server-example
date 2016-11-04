@@ -87,3 +87,4 @@ endif
 
 clean-style:
 	$(RM) $(LOCAL_CSS) $(LOCAL_STATIC_CSS)/$(PROJECT_NAME).map.css
+	$(RM) -r .sass_cache
