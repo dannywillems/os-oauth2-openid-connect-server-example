@@ -14,4 +14,4 @@ _server
 cordova
 
 # Style
-.sass_cache
+.sass-cache/
