@@ -148,9 +148,9 @@ let oauth_client_to_html c =
     p [b [pcdata "Redirect_uri: "] ; pcdata (Os_oauth2_server.redirect_uri_of_client
     info)] ;
     p [b [pcdata "Client ID: "] ; pcdata
-    (Os_oauth2_shared.client_credentials_id credentials)] ;
+    (Os_oauth2_shared.client_id_of_client_credentials credentials)] ;
     p [b [pcdata "Client secret: "] ; pcdata
-    (Os_oauth2_shared.client_credentials_secret credentials)] ;
+    (Os_oauth2_shared.client_secret_of_client_credentials credentials)] ;
     div ~a:[a_class ["text-center"]]
     [
       button
@@ -292,7 +292,7 @@ let connect_token_to_html token =
     p [b [pcdata "Token_type: "] ; pcdata token_type] ;
     p [b [pcdata "Scope: "] ; pcdata
     (String.concat " " (Os_connect_server.Basic.scope_list_to_str_list scope))] ;
-    p [b [pcdata "Header - Algo "] ; pcdata (Jwt.algorithm_to_str
+    p [b [pcdata "Header - Algo "] ; pcdata (Jwt.string_of_algorithm
     (Jwt.algorithm_of_header header_token))] ;
     p [b [pcdata "Header - Typ "] ; pcdata (Jwt.typ_of_header header_token)] ;
     p [b [pcdata "Payload - iss "] ; pcdata (Jwt.find_claim Jwt.iss

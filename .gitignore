@@ -15,3 +15,5 @@ cordova
 
 # Style
 .sass-cache/
+static/css/oauth_server.css
+static/css/oauth_server.css.map

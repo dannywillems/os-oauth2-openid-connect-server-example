@@ -85,3 +85,10 @@ let%client remove_connect_token_service =
 
 (** Services **)
 (**************************************************************************** *)
+
+let main_service =
+  Eliom_service.create
+    ~name:"remove token"
+    ~path:(Eliom_service.Path ["oauth"])
+    ~meth:(Eliom_service.Get Eliom_parameter.unit)
+    ()
